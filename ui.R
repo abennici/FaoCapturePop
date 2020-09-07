@@ -3,15 +3,15 @@ ui <- fluidPage(
   fluidRow(
     column(
       width = 4,
-      tags$h4("Sdilab popup",
-              tags$img(src="https://www.blue-cloud.org/sites/all/themes/arcadia/logo.png",height=28,align = "right")),
+      tags$h4(FlagNameUI(id="name")),
       
       mainPanel(
         
         # Output: Tabset w/ plot, summary, and table ----
         tabsetPanel(type = "tabs",
                     AnimCaptUI(id="id_2"),
-                    DataTableUI(id="id_3")
+                    PieSpUI(id="id_3"),
+                    DataTableWideUI(id="id_4")
         )
       )
     )

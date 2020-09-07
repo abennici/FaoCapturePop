@@ -1,5 +1,5 @@
 h4{
- font-size: 20pt;
+ font-size: 12pt;
  color: #0C71B8;
  font-family: Latin Modern Dunhill;
  text-align:left;
@@ -7,13 +7,21 @@ h4{
  font-style:italic
 }
 
+.js-plotly-plot{
+  height: 250px !important ;
+}
+.nav>li>a{
+padding : 5px !important ;
+}
+
 visuBtn[class="modif"]{
 	font-weight:bold;
 	text-align:center;
-font-size:15pt;}
+	padding:5px;
+font-size:14pt;}
 	
 table{
-	width:80%;
+	width:60%;
 font-family:Palatino;}
 
 table> tbody > tr > td {

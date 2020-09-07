@@ -10,7 +10,7 @@ AnimCaptUI <- function(id) {
 }
 
 # Function for module server logic
-AnimCapt <- function(input, output, session,data.sf,meta) {
+AnimCapt <- function(input, output, session,data) {
   observe({
     accumulate_by <- function(dat, var) {
       var <- lazyeval::f_eval(var, dat)
@@ -20,29 +20,50 @@ AnimCapt <- function(input, output, session,data.sf,meta) {
       })
       dplyr::bind_rows(dats)
     }
-    df<-as.data.frame(data.sf())
-    df <- df %>%group_by(year) %>% 
+    df<-as.data.frame(data())
+    
+    df <- df %>%group_by(year,f_area_type) %>% 
       summarise(capture = sum(capture))%>%
       accumulate_by(~year)
+    
+    df$f_area_type<-as.factor(df$f_area_type)
+    df$f_area_type<-factor(df$f_area_type,levels=c("marine","inland"))
+    
     fig <- df %>% plot_ly(
       x = ~year, 
-      y = ~capture, 
+      y = ~capture,
+      stackgroup = 'one',
+      split=~f_area_type,
+      height = 300,
       frame = ~frame,
       type = 'scatter', 
-      mode = 'lines', 
+      mode = 'lines',
+      #line = list(simplyfy = F),
       fill = 'tozeroy', 
-      fillcolor='rgba(114, 186, 59, 0.5)',
-      line = list(color = 'rgb(114, 186, 59)'),
+      # marker = list(
+      #   color = factor(df$f_area_type,labels=c("blue","orange"))  
+      # ),
+      fillcolor=list(
+        fill = factor(df$f_area_type,labels=c("blue","orange"))
+      ),
+      line = list(
+        color = factor(df$f_area_type,labels=c("blue","orange"))
+        ),
+      #line = list(color = c('orange','blue')),
       text = ~paste("Year: ", year, "<br>capture: ", capture), 
       hoverinfo = 'text'
     )
     fig <- fig %>% layout(
-      title = "Annual capture for global fisheries",
+     # sliders = list(
+    #    list(
+     #     active = 2018)),
+      title = "",
+      barmode = "stack",#ignored 
       yaxis = list(
-        title = "Total of capture in Tons", 
-        #range = c(0,250), 
+        title = "Capture (Tons)", 
+        range = c(0,max(df$capture)+25*max(df$capture)/100), 
         zeroline = F
-        #tickprefix = "$"
+        #tickprefix = "t"
       ),
       xaxis = list(
         title = "Year", 
@@ -57,9 +78,16 @@ AnimCapt <- function(input, output, session,data.sf,meta) {
       redraw = FALSE
     )
     fig <- fig %>% animation_slider(
-      currentvalue = list(
-        prefix = "Year "
-      )
+      
+        y = 0.2,
+       anchor="middle",
+        currentvalue = list(
+        active=2018,#ignored
+        tickcolor='#ffffff',#ignored
+        ticklength=0,#ignored
+        prefix = "",
+        font = list(size=10)
+        )
     )
     
     output$plot <- renderPlotly(fig)

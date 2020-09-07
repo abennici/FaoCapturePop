@@ -15,7 +15,7 @@ DataTable <- function(input, output, session,data.sf,meta) {
     test<-as.data.frame(data.sf())
     test<-t(test)
     test<-as.data.frame(test)
-    print(meta())
+    #print(meta())
     test$MemberCode<-rownames(test)
     test2<-merge(test,subset(meta(),select=c(MemberCode,MemberName,Definition,MeasureUnitSymbol)))
     rownames(test2)<-paste0(test2$MemberName," [",test2$MemberCode,"]")
