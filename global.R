@@ -2,6 +2,7 @@
 #packages
 library("ows4R")
 library("sp")
+library('readr')
 library("shiny")
 library("dplyr")
 library("plotly")

@@ -29,7 +29,7 @@ RUN wget https://cran.r-project.org/src/contrib/Archive/XML/XML_3.99-0.3.tar.gz
 RUN R -e "install.packages('XML_3.99-0.3.tar.gz', repos = NULL, type = 'source')"
 # install dependencies of the Fao Capture popup app
 
-RUN R -e "install.packages(c('R6', 'httr','plotly','dplyr','sp','sf','rgdal','geometa','shiny','DT','shinyWidgets','jsonlite','remotes'), repos='http://cran.r-project.org')"
+RUN R -e "install.packages(c('R6','readr', 'httr','plotly','dplyr','sp','sf','rgdal','geometa','shiny','DT','shinyWidgets','jsonlite','remotes'), repos='http://cran.r-project.org')"
 
 RUN R -e "remotes::install_github('eblondel/ows4R')"
 RUN R -e "remotes::install_github('daattali/shinycssloaders')"
