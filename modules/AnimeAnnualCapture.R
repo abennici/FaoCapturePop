@@ -24,35 +24,43 @@ AnimCapt <- function(input, output, session,data) {
     
     df <- df %>%group_by(year,f_area_type) %>% 
       summarise(capture = sum(capture))%>%
-      accumulate_by(~year)
+      accumulate_by(~year)%>%
+      ungroup()
     
     df$f_area_type<-as.factor(df$f_area_type)
     df$f_area_type<-factor(df$f_area_type,levels=c("marine","inland"))
     
-    fig <- df %>% plot_ly(
+    fig <- df %>% plot_ly(height = 300)
+    fig<-fig%>% add_trace(
       x = ~year, 
       y = ~capture,
-      stackgroup = 'one',
+    # name= c("marine","inland"),
+     # stackgroup = 'one',
       split=~f_area_type,
-      height = 300,
+     # height = 300,
       frame = ~frame,
       type = 'scatter', 
       mode = 'lines',
-      #line = list(simplyfy = F),
+      line = list(simplyfy = F),
       fill = 'tozeroy', 
+      color = ~f_area_type, 
+      colors = c( "blue", "orange"), 
       # marker = list(
       #   color = factor(df$f_area_type,labels=c("blue","orange"))  
       # ),
-      fillcolor=list(
-        fill = factor(df$f_area_type,labels=c("blue","orange"))
-      ),
-      line = list(
-        color = factor(df$f_area_type,labels=c("blue","orange"))
-        ),
+      # fillcolor=list(
+      #   fill = factor(df$f_area_type,labels=c("blue","orange"))
+      # ),
+      # line = list(
+      #   color = factor(df$f_area_type,labels=c("blue","orange"))
+      #   ),
       #line = list(color = c('orange','blue')),
       text = ~paste("Year: ", year, "<br>capture: ", capture), 
       hoverinfo = 'text'
     )
+    
+    
+    
     fig <- fig %>% layout(
      # sliders = list(
     #    list(
@@ -61,7 +69,8 @@ AnimCapt <- function(input, output, session,data) {
       barmode = "stack",#ignored 
       yaxis = list(
         title = "Capture (Tons)", 
-        range = c(0,max(df$capture)+25*max(df$capture)/100), 
+        #range = c(0,max(df$capture)+25*max(df$capture)/100), 
+        autorange=TRUE,
         zeroline = F
         #tickprefix = "t"
       ),
@@ -89,7 +98,24 @@ AnimCapt <- function(input, output, session,data) {
         font = list(size=10)
         )
     )
+    #####Test 2 alternative with ggplotly
     
+  #   df <- df %>%group_by(year,f_area_type) %>% 
+  #     summarise(capture = sum(capture))
+  #   
+  #   df$f_area_type<-as.factor(df$f_area_type)
+  #   df$f_area_type<-factor(df$f_area_type,levels=c("marine","inland"))
+  #   
+  #   p <- ggplot(df,aes(x = year, y = capture,frame=year))+
+  #     geom_area(aes(fill=f_area_type,frame=f_area_type),alpha=0.5)+
+  #     labs(x='Capture (Tons)',y='Year')+
+  #     theme(legend.title = element_blank(),
+  #           axis.text.x = element_text(angle = 90)))+
+  #   scale_fill_manual(name = c("marine","inland"),values = c("lightblue","coral"))
+  # p  
+  # fig<-ggplotly(p)
+    
+    ###End test 2
     output$plot <- renderPlotly(fig)
     
   })
