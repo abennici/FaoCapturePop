@@ -22,82 +22,126 @@ AnimCapt <- function(input, output, session,data) {
     }
     df<-as.data.frame(data())
     
-    df <- df %>%group_by(year,f_area_type) %>% 
+    df <- df %>%
+      group_by(year,f_area_type) %>% 
       summarise(capture = sum(capture))%>%
       accumulate_by(~year)%>%
+      #arrange(desc(f_area_type))%>%
       ungroup()
+    #mutate(f_area_type,as.factor(f_area_type))
+    # df$f_area_type<-as.factor(df$f_area_type)
+    # df$f_area_type<-factor(df$f_area_type,levels=c("marine","inland"))
     
-    df$f_area_type<-as.factor(df$f_area_type)
-    df$f_area_type<-factor(df$f_area_type,levels=c("marine","inland"))
+    #df$f_area_type2<-ifelse(df$f_area_type=="inland","inland","marine")
+    print("df_area loaded")
     
-    fig <- df %>% plot_ly(height = 300)
-    fig<-fig%>% add_trace(
-      x = ~year, 
-      y = ~capture,
-    # name= c("marine","inland"),
-     # stackgroup = 'one',
-      split=~f_area_type,
-     # height = 300,
-      frame = ~frame,
-      type = 'scatter', 
-      mode = 'lines',
-      line = list(simplyfy = F),
-      fill = 'tozeroy', 
-      color = ~f_area_type, 
-      colors = c( "blue", "orange"), 
-      # marker = list(
-      #   color = factor(df$f_area_type,labels=c("blue","orange"))  
-      # ),
-      # fillcolor=list(
-      #   fill = factor(df$f_area_type,labels=c("blue","orange"))
-      # ),
-      # line = list(
-      #   color = factor(df$f_area_type,labels=c("blue","orange"))
-      #   ),
-      #line = list(color = c('orange','blue')),
-      text = ~paste("Year: ", year, "<br>capture: ", capture), 
-      hoverinfo = 'text'
-    )
+    #AREA PLOT
+    #color_map <- c(marine="blue", inland="orange")
+    #df$color <- ifelse(df$f_area_type=="marine", "blue", "orange") 
     
+    pal <- c("orange", "blue")
+    pal <- setNames(pal, c("inland", "marine"))
     
-    
-    fig <- fig %>% layout(
-     # sliders = list(
-    #    list(
-     #     active = 2018)),
-      title = "",
-      barmode = "stack",#ignored 
-      yaxis = list(
-        title = "Capture (Tons)", 
-        #range = c(0,max(df$capture)+25*max(df$capture)/100), 
-        autorange=TRUE,
-        zeroline = F
-        #tickprefix = "t"
-      ),
-      xaxis = list(
-        title = "Year", 
-        #range = c(0,30), 
-        zeroline = F, 
-        showgrid = F
+    fig <- df %>% 
+      plot_ly(
+        x = ~year, 
+        y = ~capture,
+        #stackgroup = 'one',
+        height = 300,
+        split=~f_area_type,
+        frame = ~frame,
+        color = ~as.character(f_area_type),
+        #colors="Set1",
+        colors=pal,
+        #color=color_map[df$f_area_type]
+        #colors = c( "blue", "orange"),
+        type = 'scatter', 
+        mode = 'lines',
+        fill = 'tozeroy',
+        line = list(simplyfy = F),
+        text = ~paste("Year: ", year, "<br>capture: ", capture), 
+        hoverinfo = 'text'
       )
+    
+    fig <- fig %>% layout(title = "",
+                                    yaxis = list(title = "Capture (Tons) by Type of Area", range = c(0,max(df$capture)+25*max(df$capture)/100), zeroline = F),
+                                    xaxis = list( title = "Year", zeroline = F)
     ) 
-    fig <- fig %>% animation_opts(
-      frame = 100, 
-      transition = 0, 
-      redraw = FALSE
+    fig<- fig %>% animation_opts(frame = 100,transition = 0,redraw = FALSE )
+    
+    fig <- fig %>% animation_slider(y = 0.2,anchor="middle",currentvalue = list(
+      active=2018,tickcolor='#ffffff',ticklength=0,prefix = "",font = list(size=10))
     )
-    fig <- fig %>% animation_slider(
-      
-        y = 0.2,
-       anchor="middle",
-        currentvalue = list(
-        active=2018,#ignored
-        tickcolor='#ffffff',#ignored
-        ticklength=0,#ignored
-        prefix = "",
-        font = list(size=10)
-        )
-    )
+    
+    ###FIRST VERSION
+    # 
+    # df <- df %>%group_by(year,f_area_type) %>% 
+    #   summarise(capture = sum(capture))%>%
+    #   accumulate_by(~year)%>%
+    #   ungroup()
+    # 
+    # df$f_area_type<-as.factor(df$f_area_type)
+    # df$f_area_type<-factor(df$f_area_type,levels=c("marine","inland"))
+    # 
+    # fig <- df %>% plot_ly(height = 300)
+    # fig<-fig%>% add_trace(
+    #   x = ~year, 
+    #   y = ~capture,
+    # # name= c("marine","inland"),
+    #  # stackgroup = 'one',
+    #   split=~f_area_type,
+    #   height = 300,
+    #   frame = ~frame,
+    #   type = 'scatter', 
+    #   mode = 'lines',
+    #   line = list(simplyfy = F),
+    #   fill = 'tozeroy', 
+    #   color = ~f_area_type, 
+    #   colors = c( "blue", "orange"), 
+    #   text = ~paste("Year: ", year, "<br>capture: ", capture), 
+    #   hoverinfo = 'text'
+    # )
+    # 
+    # 
+    # fig <- fig %>% layout(
+    #  # sliders = list(
+    # #    list(
+    #  #     active = 2018)),
+    #   title = "",
+    #   barmode = "stack",#ignored 
+    #   yaxis = list(
+    #     title = "Capture (Tons)", 
+    #     #range = c(0,max(df$capture)+25*max(df$capture)/100), 
+    #     autorange=TRUE,
+    #     zeroline = F
+    #     #tickprefix = "t"
+    #   ),
+    #   xaxis = list(
+    #     title = "Year", 
+    #     #range = c(0,30), 
+    #     zeroline = F, 
+    #     showgrid = F
+    #   )
+    # ) 
+    # fig <- fig %>% animation_opts(
+    #   frame = 100, 
+    #   transition = 0, 
+    #   redraw = FALSE
+    # )
+    # fig <- fig %>% animation_slider(
+    #   
+    #     y = 0.2,
+    #    anchor="middle",
+    #     currentvalue = list(
+    #     active=2018,#ignored
+    #     tickcolor='#ffffff',#ignored
+    #     ticklength=0,#ignored
+    #     prefix = "",
+    #     font = list(size=10)
+    #     )
+    # )
+    
+    ##END FIRST VERSION
     #####Test 2 alternative with ggplotly
     
   #   df <- df %>%group_by(year,f_area_type) %>% 
