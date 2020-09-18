@@ -23,7 +23,8 @@ AnimCapt <- function(input, output, session,data) {
     df<-as.data.frame(data())
     
     df <- df %>%
-      group_by(year,f_area_type) %>% 
+      #group_by(year,f_area_type) %>% 
+      group_by(year) %>% 
       summarise(capture = sum(capture))%>%
       accumulate_by(~year)%>%
       #arrange(desc(f_area_type))%>%
@@ -39,8 +40,8 @@ AnimCapt <- function(input, output, session,data) {
     #color_map <- c(marine="blue", inland="orange")
     #df$color <- ifelse(df$f_area_type=="marine", "blue", "orange") 
     
-    pal <- c("orange", "blue")
-    pal <- setNames(pal, c("inland", "marine"))
+  #  pal <- c("orange", "blue")
+  #  pal <- setNames(pal, c("inland", "marine"))
     
     fig <- df %>% 
       plot_ly(
@@ -48,11 +49,11 @@ AnimCapt <- function(input, output, session,data) {
         y = ~capture,
         #stackgroup = 'one',
         height = 300,
-        split=~f_area_type,
+      #  split=~f_area_type,
         frame = ~frame,
-        color = ~as.character(f_area_type),
+      #  color = ~as.character(f_area_type),
         #colors="Set1",
-        colors=pal,
+      #  colors=pal,
         #color=color_map[df$f_area_type]
         #colors = c( "blue", "orange"),
         type = 'scatter', 
@@ -64,7 +65,8 @@ AnimCapt <- function(input, output, session,data) {
       )
     
     fig <- fig %>% layout(title = "",
-                                    yaxis = list(title = "Capture (Tons) by Type of Area", range = c(0,max(df$capture)+25*max(df$capture)/100), zeroline = F),
+                                   # yaxis = list(title = "Capture (Tons) by Type of Area", range = c(0,max(df$capture)+25*max(df$capture)/100), zeroline = F),
+                          yaxis = list(title = "Capture (Tons)", range = c(0,max(df$capture)+25*max(df$capture)/100), zeroline = F),
                                     xaxis = list( title = "Year", zeroline = F)
     ) 
     fig<- fig %>% animation_opts(frame = 100,transition = 0,redraw = FALSE )
