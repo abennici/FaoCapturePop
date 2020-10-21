@@ -11,7 +11,8 @@ ui <- fluidPage(
         tabsetPanel(type = "tabs",
                     AnimCaptUI(id="id_2"),
                     PieSpUI(id="id_3"),
-                    DataTableWideUI(id="id_4")
+                    DataTableWideUI(id="id_4"),
+                    QueryInfoUI(id="id_1")
         )
       )
     )
