@@ -1,6 +1,6 @@
 ###Module
 # Function for module server logic
-QueryData <- function(input, output, session,data_sp,wfs_server,wfs_version,layer,feature_geom,param) {
+QueryData <- function(input, output, session,data_sp,wfs_server,wfs_version,layer,feature_geom,param,strategy) {
   data<-reactiveValues(data=NULL)
   print("START QUERYDATA")
   observe({
@@ -13,10 +13,12 @@ QueryData <- function(input, output, session,data_sp,wfs_server,wfs_version,laye
     wfs_version<-wfs_version()
     layer<-layer()
     feature_geom<-feature_geom()
+    strategy<-strategy()
     par<-str_replace(param(), "aggregation_method:sum", "aggregation_method:none")
     #Remove existing flag query
-    flag_pattern<-unlist(str_extract_all(query$par, "flag:.+;"))
-    if(length(flag_pattern!=0)){par<-str_replace(par, flag_pattern, "")}
+    flag_pattern<-unlist(str_extract_all(par, "flag:.+;"))
+    if(length(flag_pattern)!=0){
+      par<-str_replace(par, flag_pattern, "")}
     #Update flag query with map clicking position
     par<-paste("flag:",data_sp,";",par,sep="")
     #Connect to OGC WFS to get DATA
