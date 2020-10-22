@@ -1,4 +1,4 @@
-FROM r-base:3.6.3
+FROM rocker/r-ver:3.6.3
 
 MAINTAINER Alexandre Bennici "bennicialexandre@gmail.com"
 
@@ -21,14 +21,9 @@ RUN apt-get update && apt-get install -y \
    
   RUN apt-get update && apt-get upgrade -y
 
-#Install XML package from archive
-#Issue is that XML package from 2020-07 is referenced as depending on R >= 4.0
-#To temporarily solve that we use the previous XML package version from archive
-RUN wget https://cran.r-project.org/src/contrib/Archive/XML/XML_3.99-0.3.tar.gz
-
-RUN R -e "install.packages('XML_3.99-0.3.tar.gz', repos = NULL, type = 'source')"
 # install dependencies of the Fao Capture popup app
-
+RUN R -e "install.packages(c('devtools'), repos='https://cran.r-project.org/')"
+RUN R -e "devtools::install_version('XML', version='3.99-0.3', repos = 'http://cran.r-project.org')"
 RUN R -e "install.packages(c('R6','readr','shinycssloaders','stringr','ggplot2', 'httr','plotly','dplyr','sp','sf','rgdal','geometa','shiny','DT','shinyWidgets','jsonlite','remotes'), repos='http://cran.r-project.org')"
 
 RUN R -e "remotes::install_github('eblondel/ows4R')"
