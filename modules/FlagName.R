@@ -23,7 +23,7 @@ FlagName <- function(input, output, session,data) {
    #output$value <- renderText({ paste0(flag_name$Name_En," [",flag_name$flag,"]") })
    output$flag_header <- renderUI({
      #url<-paste0("http://www.fao.org/fileadmin/assets/countries/flags/",tolower(as.vector(flag_name$flag)[1]),".gif")
-     url<-paste0("https://raw.githubusercontent.com/eblondel/OpenFairViewer/master/src/js/OpenFairViewer/img/flags/",tolower(as.vector(flag_name$flag)[1]),".gif")
+     url<-paste0("https://raw.githubusercontent.com/eblondel/OpenFairViewer/master/src/img/flags/",tolower(as.vector(flag_name$flag)[1]),".gif")
      tags$div(
        tags$img(src="https://www.blue-cloud.org/sites/all/themes/arcadia/logo.png",height=18,align = "right"),
        tags$img(src=url,height=15,align = "left",style="margin-right:5px"),
