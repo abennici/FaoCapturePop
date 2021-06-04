@@ -14,10 +14,10 @@ PieSp <- function(input, output, session,data) {
   observe({
 
   req = readr::read_csv("https://raw.githubusercontent.com/openfigis/RefData/gh-pages/species/CL_FI_SPECIES_ITEM.csv", col_names = FALSE)
-  colnames(req) <- c("Alpha_Code", "Identifier", "Name_En", "Name_Fr", "Name_Es", "Name_Ar", "Name_Cn", "Name_Ru", "Unit", "Scientific_Name", "Author", "Taxonomic_Code")
+  names(req) <- req[1,]
   sp_register <- data.frame(
-    species = req$Alpha_Code,
-    label = paste0(req$Name_En," [",req$Alpha_Code,"]"),
+    species = req$Alpha3_Code,
+    label = paste0(req$Name_En," [",req$Alpha3_Code,"]"),
     stringsAsFactors = FALSE
   )
   
