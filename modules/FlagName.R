@@ -14,7 +14,7 @@ FlagName <- function(input, output, session,data) {
   observe({
     c_flag<-as.data.frame(data())
     c_flag<-data.frame(flag=unique(c_flag$flag))
-    l_flag<-readr::read_csv("https://raw.githubusercontent.com/openfigis/RefData/gh-pages/country/CL_FI_COUNTRY_ITEM.csv", guess_max = 0)
+    l_flag<-readr::read_csv("https://raw.githubusercontent.com/openfigis/RefData/gh-pages/country/CL_FI_COUNTRY_M49.csv", guess_max = 0)
     l_flag<-l_flag[,c("ISO3_Code","Name_En")]
     print(c_flag)
     print(head(l_flag))
